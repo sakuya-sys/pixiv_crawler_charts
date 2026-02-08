@@ -1,6 +1,8 @@
 # pixiv_crawler_charts
 爬取p站每日榜单的简易爬虫
 
+![PixPin_2026-02-08_14-44-55](https://github.com/user-attachments/assets/ad43dd6d-e0c3-4c30-bc0c-46ef10add43a)
+
 # cookei设置
 <img width="375" height="126" alt="image" src="https://github.com/user-attachments/assets/8f9aac0c-e7f3-4301-a16e-2139295e6d07" />
 
