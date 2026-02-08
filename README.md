@@ -22,6 +22,12 @@ py脚本中默认设置代理地址为
 
 <img width="482" height="99" alt="image" src="https://github.com/user-attachments/assets/ff6ff8d4-f6e1-4bc6-9048-1eb69849ba53" />
 
+如果每次爬取的中途中老是断开连接 大概率是你的代理节点不稳定
+
+请更换一个较为稳定的节点再使用脚本
+
+<img width="643" height="420" alt="image" src="https://github.com/user-attachments/assets/72d03d8d-36f1-4ad0-9830-e536d77a4e2e" />
+
 # 每日榜单
 该脚本有两种模式
 
