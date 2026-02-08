@@ -3,16 +3,21 @@
 
 # cookei设置
 <img width="375" height="126" alt="image" src="https://github.com/user-attachments/assets/8f9aac0c-e7f3-4301-a16e-2139295e6d07" />
+
 要想爬取r18榜单的图片 需要设置cookie模拟登录
+
 <img width="1898" height="711" alt="image" src="https://github.com/user-attachments/assets/d19bf7f9-d3e1-4940-ba73-1a61dccb76a5" />
+
 访问p站 按下f12
 点击网络 可以看到数据包信息 其中的cookie字段就是我们需要的
 将cookise放入py脚本中即可正常爬取r18榜单
+
 <img width="941" height="361" alt="image" src="https://github.com/user-attachments/assets/4a713a9c-0165-40a6-b0b2-b41dd57aef00" />
 
 # 代理设置
 使用前需要先设置好代理 然后才能正常爬取
 py脚本中默认设置代理地址为
+
 <img width="482" height="99" alt="image" src="https://github.com/user-attachments/assets/ff6ff8d4-f6e1-4bc6-9048-1eb69849ba53" />
 
 # 每日榜单
