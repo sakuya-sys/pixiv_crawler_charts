@@ -1,5 +1,5 @@
 # pixiv_crawler_charts
-爬取p站每日榜单的简易爬虫
+爬取p站每日榜单的简易爬虫工具
 
 ![PixPin_2026-02-08_14-44-55](https://github.com/user-attachments/assets/ad43dd6d-e0c3-4c30-bc0c-46ef10add43a)
 
