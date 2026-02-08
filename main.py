@@ -44,7 +44,7 @@ def download_one_image(url,path):#下载单张图片
             url=re.sub(pattern=".jpg",repl=".png",string=url)
             res=requests.get(url=url,proxies=proxies,headers=headers,stream=True)
             if res.status_code!=200:#如果不是200 则下载失败
-                print("下载失败")
+                print("[-]下载失败")
                 res_close(res)
                 return 0
         name=uuid.uuid4().hex#生成随机文件名
@@ -67,7 +67,7 @@ def get_urls(url):#获取图片url
         text=str(json.loads(res.text))#获得网页源代码 先将其转换为json格式 再转换为字符串
         if not re.findall(pattern,text):
             print("[-]url错误")
-            print(f"请检查你的url是否正确:{url}")
+            print(f"[-]请检查你的url是否正确:{url}")
             exit(0)
     urls=[]
     matchs=re.findall(pattern,text)
@@ -88,14 +88,14 @@ if __name__=="__main__":
         path=path_image+f"\\{date}"
         if_exit=mkdir(path)
         if if_exit:
-            print("今日已经获取到图片")
+            print("[-]今日已经获取到图片")
             exit(0)
         else:
             with cf.ThreadPoolExecutor(max_workers=5) as executor:
                 for url in urls:
                     executor.submit(download_one_image(url,path))
     elif mode not in modes:
-        print("模式错误")
+        print("[-]模式错误")
         exit(0)
     else:#其他模式
         date=input("请选择日期:\n例子:20260101\n")
@@ -105,11 +105,12 @@ if __name__=="__main__":
         path=path_image+f"\\{date}_{mode}_{p}"
         if_exit=mkdir(path)
         if if_exit:
-            print("该日期已经获取到该模式的该页码的图片")
+            print("[-]该日期已经获取到该模式的该页码的图片")
             exit(0)
         else:
             with cf.ThreadPoolExecutor(max_workers=5) as executor:
                 for url in urls:
                     executor.submit(download_one_image(url,path))
     
+
 
