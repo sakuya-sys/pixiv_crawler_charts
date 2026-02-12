@@ -6,6 +6,7 @@ import uuid
 import concurrent.futures as cf
 import json
 import sys
+from pathlib import Path
 from datetime import datetime, timedelta
 #代理设置
 proxies={
@@ -19,6 +20,24 @@ headers={
 }
 #cookies设置
 cookies_dict = {
+    "first_visit_datetime_pc": "2025-09-29 00:05:23",
+    "p_ab_id": "4",
+    "p_ab_id_2": "5",
+    "p_ab_d_id": "1715182864",
+    "yuid_b": "gpRUJg",
+    "privacy_policy_notification": "0",
+    "a_type": "0",
+    "device_token": "a02526c7d7e5a5545fde16c2221c77aa",
+    "privacy_policy_agreement": "7",
+    "login_ever": "yes",
+    "c_type": "25",
+    "b_type": "0",
+    "user_language": "zh",
+    "cc1": "2026-02-09 23:12:29",
+    "PHPSESSID": "123617030_jKQO6735uTHsC7KNvKCClU0oLrRQn9U3",
+    "_cfuvid": "xhev.WPDQ5OY0l7._vOaaoKqcH8r1lUOsLpqwrYGS6I-1770692960681-0.0.1.1-604800000",
+    "__cf_bm": "T94Y31ZvcuENqJFpx.fbIxu4o99ur_FkxKGrvWGjpJ0-1770702753-1.0.1.1-DUnNWYc9NqE8fcsp6c_MyC7kftHWMEqD.MsO6inU9cuCRlBHmhsOwx4QiZr3AwQwytJJXoKLVJ7APq7ux1gBWy_.kD9zd39xbjF46gTRWc2kHHM_HJQ45PMAVOtvejCM",
+    "cf_clearance": ".7qvGfV21lJqu9hphv5GIRzpbQQhjL5RbVvxa2nhaCg-1770703016-1.2.1.1-frcTmUWONvYbptL.JfNiY8oKwirL7.X4c0Hy0mIZHh2ih93H5VnS4azoUZOk6RjGqH.rkv1_SrlMZ1teKSkdk_NV7oN0XMSZaSMsF5rklLDihbLD5Src_t3qGj1jQQhGqs6KOGK7_2SRy1v3rw6Bu1hhMjo7ZgpmHy8Q8.4zNSd2cvBHZGVsx6bGoFvtSrkyTK8oIp2vj.D3dQFNQPyD4mdRM5R0FgBllVHlOdCn8qU"
 
 }
 #图片保存路径
@@ -26,7 +45,7 @@ path_image="D:\\qb"
 
 def if_ready():#检查代理是否开启
     url="https://www.pixiv.net/"
-    with requests.get(url=url,proxies=proxies,headers=headers,cookies=cookies_dict) as res:
+    with requests.get(url=url,proxies=proxies,headers=headers,cookies=cookies_dict,timeout=10) as res:
         if res.status_code!=200:
             print(f"[-]请求失败 状态码:{res.status_code} 代理未开启")
             sys.exit(0)
@@ -46,12 +65,16 @@ def mkdir(path_a):#创建文件夹
 
 def get_author_illusts_id(uid):#获取作者的所有图片id
     url=f"https://www.pixiv.net/ajax/user/{uid}/profile/all"
-    with requests.get(url=url,proxies=proxies,headers=headers,cookies=cookies_dict) as res:
+    with requests.get(url=url,proxies=proxies,headers=headers,cookies=cookies_dict,timeout=10) as res:
         text=json.loads(res.text)
         if text["error"]==True:
             print(f"[-]输入的作者uid:{uid}不存在 请检查uid是否正确",flush=True)
-            sys.exit(0)
-        illusts_id=[int(key) for key in text["body"]["illusts"].keys()]
+            sys.exit(1)
+        try:
+            illusts_id=[int(key) for key in text["body"]["illusts"].keys()]
+        except KeyError:
+            print(f"[-]输入的作者uid:{uid}不存在作品 请检查uid是否正确",flush=True)
+            sys.exit(1)
     return illusts_id
 
 def check_date(date):#检查日期是否正确
@@ -92,7 +115,7 @@ def fix_url(url,illust_id):#修复url格式
 
 def get_author_illusts_url(uid,illust_id,flag=0):#获取作者的指定插画id作品的url
     url_illust=f"https://www.pixiv.net/ajax/user/{uid}/illusts?ids%5B%5D={illust_id}&lang=zh"
-    with requests.get(url=url_illust,proxies=proxies,headers=headers,cookies=cookies_dict) as res:
+    with requests.get(url=url_illust,proxies=proxies,headers=headers,cookies=cookies_dict,timeout=10) as res:
         data=json.loads(res.text)
         url=data["body"][f"{illust_id}"]["url"]
         print(f"[+]illust_id为{illust_id}的图片url已成功获取",flush=True)
@@ -105,7 +128,7 @@ def download_a_set_image(url,path):#下载作品集
     mkdir(path)
     url_page=f"https://www.pixiv.net/ajax/illust/{illusts_id}"
     try:
-        with requests.get(url=url_page,proxies=proxies,headers=headers,cookies=cookies_dict) as res:
+        with requests.get(url=url_page,proxies=proxies,headers=headers,cookies=cookies_dict,timeout=10) as res:
             data=json.loads(res.text)
             pageCount=data["body"]["pageCount"]#获取作品集中图片的数量
     except Exception as e:
@@ -121,7 +144,7 @@ def if_hot_image(id,max_retries=3):#检查图片是否热门
     url=f"https://www.pixiv.net/ajax/illust/{id}"
     for i in range(max_retries):
         try:
-            with requests.get(url=url,proxies=proxies,headers=headers,cookies=cookies_dict) as res:
+            with requests.get(url=url,proxies=proxies,headers=headers,cookies=cookies_dict,timeout=10) as res:
                 text=json.loads(res.text)
                 break
         except Exception as e:
@@ -138,7 +161,7 @@ def if_hot_image(id,max_retries=3):#检查图片是否热门
 def to_tags_get_url(tag,p=1):#通过tag获取图片url
     url=f"https://www.pixiv.net/ajax/search/artworks/{tag}?order=date_d&mode=safe&p={p}&csw=1&s_mode=s_tag&type=all&lang=zh"
     try:
-        with requests.get(url=url,proxies=proxies,headers=headers,cookies=cookies_dict) as res:
+        with requests.get(url=url,proxies=proxies,headers=headers,cookies=cookies_dict,timeout=10) as res:
             text=json.loads(res.text)
             total=text["body"]["illustManga"]["total"]
             last_page=text["body"]["illustManga"]["lastPage"]
@@ -181,12 +204,12 @@ def download_one_image(url,path,max_retries=3,flag=0):#下载单张图片
     illust_id=to_url_get_illust_id(url)
     for i in range(max_retries):
         try:
-            res=requests.get(url=url,proxies=proxies,headers=headers,stream=True)#获取响应 流式传输 适合大文件下载
+            res=requests.get(url=url,proxies=proxies,headers=headers,stream=True,timeout=10)#获取响应 流式传输 适合大文件下载
             status_code=res.status_code
             if status_code==404:#如果返回404 可能图片是.png格式
                 res_close(res)
                 url_1=re.sub(pattern=".jpg",repl=".png",string=url)
-                res=requests.get(url=url_1,proxies=proxies,headers=headers,stream=True)
+                res=requests.get(url=url_1,proxies=proxies,headers=headers,stream=True,timeout=10)
                 status_code=res.status_code
                 if res.status_code!=200:#如果不是200 则下载失败
                     if flag:
@@ -219,12 +242,12 @@ def if_set_illsut(url):#检查图片是否是作品集
     if suffix=="jpg":#可能是jpg 也可能是png 传进来的url并不能确定是哪一种
         repatern=r'\d+\.jpg'
         url_jpg=re.sub(pattern=repatern,repl="1.jpg",string=url)
-        res=requests.get(url=url_jpg,proxies=proxies,headers=headers,cookies=cookies_dict)
+        res=requests.get(url=url_jpg,proxies=proxies,headers=headers,cookies=cookies_dict,timeout=10)
         status_code=res.status_code
         if status_code==404:
             res_close(res)
             url_png_1=re.sub(pattern=".jpg",repl=".png",string=url_jpg)
-            res=requests.get(url=url_png_1,proxies=proxies,headers=headers,cookies=cookies_dict)
+            res=requests.get(url=url_png_1,proxies=proxies,headers=headers,cookies=cookies_dict,timeout=10)
             if res.status_code!=200:
                 res_close(res)
                 return False
@@ -232,12 +255,12 @@ def if_set_illsut(url):#检查图片是否是作品集
     elif suffix=="png":
         repatern=r'\d+\.png'
         url_png=re.sub(pattern=repatern,repl="1.png",string=url)
-        res=requests.get(url=url_png,proxies=proxies,headers=headers,cookies=cookies_dict)
+        res=requests.get(url=url_png,proxies=proxies,headers=headers,cookies=cookies_dict,timeout=10)
         status_code=res.status_code
         if status_code==404:
             res_close(res)
             url_jpg_1=re.sub(pattern=".png",repl=".jpg",string=url_png)
-            res=requests.get(url=url_jpg_1,proxies=proxies,headers=headers,cookies=cookies_dict)
+            res=requests.get(url=url_jpg_1,proxies=proxies,headers=headers,cookies=cookies_dict,timeout=10)
             if res.status_code!=200:
                 res_close(res)
                 return False
@@ -255,7 +278,7 @@ def if_set_illsut(url):#检查图片是否是作品集
 def get_urls(url):#获取图片url
     #匹配url(该模式只匹配来自排行榜中的图片url)
     urls=[]
-    with requests.get(url=url,proxies=proxies,headers=headers,cookies=cookies_dict) as res:
+    with requests.get(url=url,proxies=proxies,headers=headers,cookies=cookies_dict,timeout=10) as res:
         text=json.loads(res.text)#获得网页源代码 先将其转换为json格式 再转换为字符串
         if "不正确的请求" in text:
             print("[-]url错误")
@@ -268,8 +291,41 @@ def get_urls(url):#获取图片url
         urls.append(fix_url(url,illust_id))
     return urls
 
+def general_download(urls,path):
+    with cf.ThreadPoolExecutor(max_workers=20) as executor_1:#并发检查图片是否是作品集
+        futures=[]
+        urls_set=[]
+        for url in urls:
+            future=executor_1.submit(if_set_illsut,url)
+            futures.append(future)
 
+        for future in futures:
+            try:
+                url=future.result()
+                if url!=False:
+                    urls_set.append(url)
+            except Exception as e:
+                print(f"[-]获取图片url失败:{e}",flush=True)
+                continue
+    with cf.ThreadPoolExecutor(max_workers=20) as executor_download:#并发下载图片
+        futures_download=[]
+        for url in urls:
+            if url in urls_set:
+                future_a=executor_download.submit(download_a_set_image,url,path)
+                futures_download.append(future_a)
+            else:
+                future_b=executor_download.submit(download_one_image,url,path)
+                futures_download.append(future_b)
+        for future in futures_download:
+            try:
+                future.result()
+            except Exception as e:
+                print(f"[-]获取图片失败:{e}",flush=True)
+                continue
 
+def if_file_exist(path):#检查文件是否存在
+    with os.scandir(path) as item:
+        return any(item)
 
 if __name__=="__main__":
     if_ready()
@@ -279,16 +335,18 @@ if __name__=="__main__":
         uid=input("请输入作者id:\n例子:56970644\n")
         p=input("请输入要获取的图片数量:\n例子:10\n")
         check_p(p)
-        illusts_id=get_author_illusts_id(uid)
-        path=path_image+f"\\{uid}_{p}"
-        if_exist=mkdir(path)
-        file_size = os.path.getsize(path)
+        date=datetime.now().date().strftime("%Y%m%d")
+        path=path_image+f"\\{uid}_{date}_{p}"
+        path_P=Path(path)
+        if_exist=path_P.exists()
         if if_exist:
-            if file_size!=0:
+            if if_file_exist(path_P):
                 print(f"[-]该作者的前{p}张图片已经获取了")
                 print(f"[-]具体图片文件地址:{path}")
                 sys.exit(0)
         else:
+            path_P.mkdir(parents=True,exist_ok=True)
+            illusts_id=get_author_illusts_id(uid)
             with cf.ThreadPoolExecutor(max_workers=20) as executor:#并发获取作者的作品url
                 futures=[]
                 for i in range(0,(len(illusts_id) if int(p)>len(illusts_id) else int(p))):
@@ -301,100 +359,42 @@ if __name__=="__main__":
                     except Exception as e:
                         print(f"[-]获取图片url失败:{e}",flush=True)
                         continue
-            urls_set=[]
-            futures=[]
-            with cf.ThreadPoolExecutor(max_workers=20) as executor_1:#并发检查图片是否是作品集
-                for url in urls:
-                    future=executor_1.submit(if_set_illsut,url)
-                    futures.append(future)
+            general_download(urls,path)
 
-                for future in futures:
-                    try:
-                        url=future.result()
-                        if url!=False:
-                            urls_set.append(url)
-                    except Exception as e:
-                        print(f"[-]获取图片url失败:{e}",flush=True)
-                        continue
-            with cf.ThreadPoolExecutor(max_workers=20) as executor_download:#并发下载图片
-                for url in urls:
-                    if url in urls_set:
-                        executor_download.submit(download_a_set_image,url,path)
-                    else:
-                        executor_download.submit(download_one_image,url,path)
+
     elif mode=="4":#tag模式
         tag=input("请输入tag:\n例子:萝莉(loli)\n")
         p=input("请输入页码:\n例子:1 (一页有50张图片)\n")
-        path=path_image+f"\\{tag}_{p}"
-        if_exist=mkdir(path)
-        file_size = os.path.getsize(path)
+        date=datetime.now().date().strftime("%Y%m%d")
+        path=path_image+f"\\{tag}_{date}_{p}"
+        path_P=Path(path)
+        if_exist=path_P.exists()
         if if_exist:
-            if file_size!=0:
+            if if_file_exist(path_P):
                 print(f"[-]该tag{tag}的第{p}页图片已经获取了")
                 print(f"[-]具体图片文件地址:{path}")
                 sys.exit(0)
         else:
+            path_P.mkdir(parents=True,exist_ok=True)
             urls=to_tags_get_url(tag,p)
-            urls_set=[]
-            futures=[]
-            with cf.ThreadPoolExecutor(max_workers=20) as executor_1:
-                for url in urls:
-                    future=executor_1.submit(if_set_illsut,url)
-                    futures.append(future)
-
-                for future in futures:
-                    try:
-                        url=future.result()
-                        if url!=False:
-                            urls_set.append(url)
-                    except Exception as e:
-                        print(f"[-]获取图片url失败:{e}",flush=True)
-                        continue
-
-            with cf.ThreadPoolExecutor(max_workers=20) as executor:
-                for url in urls:
-                    if url in urls_set:
-                        executor.submit(download_a_set_image,url,path)     
-                    else:
-                        executor.submit(download_one_image,url,path)
-
+            general_download(urls,path)
 
     elif mode=="5":#默认模式
         today=datetime.now().date()
         yesterday=today-timedelta(days=1)
         date=yesterday.strftime("%Y%m%d")
         path=path_image+f"\\每日榜单_{date}"
-        if_exist=mkdir(path)
-        file_size = os.path.getsize(path)
+        path_P=Path(path)
+        if_exist=path_P.exists()
         if if_exist:
-            if file_size!=0:
+            if if_file_exist(path_P):
                 print("[-]今日已经获取到图片")
                 print(f"[-]具体图片文件地址:{path}")
                 sys.exit(0)
         else:
+            path_P.mkdir(parents=True,exist_ok=True)
             urls=get_urls(url="https://www.pixiv.net/ranking.php?mode=daily&format=json&p=1")
-            urls_set=[]
-            futures=[]
-            with cf.ThreadPoolExecutor(max_workers=20) as executor_1:
-                for url in urls:
-                    future=executor_1.submit(if_set_illsut,url)
-                    futures.append(future)
-
-                for future in futures:
-                    try:
-                        url=future.result()
-                        if url!=False:
-                            urls_set.append(url)
-                    except Exception as e:
-                        print(f"[-]获取图片url失败:{e}",flush=True)
-                        continue
-
-            with cf.ThreadPoolExecutor(max_workers=20) as executor:
-                for url in urls:
-                    if url in urls_set:
-                        executor.submit(download_a_set_image,url,path)     
-                    else:
-                        executor.submit(download_one_image,url,path)
+            general_download(urls,path)
 
     elif mode not in ["1","2","3","4","5"]:
         print("[-]模式错误")
@@ -407,37 +407,17 @@ if __name__=="__main__":
         mode=modes[mode]
         check_p_page(p,mode)
         path=path_image+f"\\{date}_{mode}_{p}"
-        if_exist=mkdir(path)
-        file_size = os.path.getsize(path)
+        path_P=Path(path)
+        if_exist=path_P.exists()
         if if_exist:
-            if file_size!=0:
+            if if_file_exist(path_P):
                 print("[-]该日期已经获取到该模式的该页码的图片")
                 print(f"[-]具体图片文件地址:{path}")
                 sys.exit(0)
         else:
+            path_P.mkdir(parents=True,exist_ok=True)
             url_mode_date=f"https://www.pixiv.net/ranking.php?mode={mode}&date={date}&format=json&p={p}"
             urls=get_urls(url=url_mode_date)
-            urls_set=[]
-            futures=[]
-            with cf.ThreadPoolExecutor(max_workers=20) as executor_1:
-                for url in urls:
-                    future=executor_1.submit(if_set_illsut,url)
-                    futures.append(future)
-
-                for future in futures:
-                    try:
-                        url=future.result()
-                        if url!=False:
-                            urls_set.append(url)
-                    except Exception as e:
-                        print(f"[-]获取图片url失败:{e}",flush=True)
-                        continue
-
-            with cf.ThreadPoolExecutor(max_workers=20) as executor:
-                for url in urls:
-                    if url in urls_set:
-                        executor.submit(download_a_set_image,url,path)     
-                    else:
-                        executor.submit(download_one_image,url,path)
+            general_download(urls,path)
     
 
