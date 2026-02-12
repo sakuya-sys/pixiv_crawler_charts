@@ -244,7 +244,7 @@ def cli():
     # 根据模式调用对应的下载函数
     if args.mode == 'daily':
         daily_or_daily_r18_downloader('daily', args.date, args.page)
-    elif args.mode == 'daily-r18':
+    elif args.mode == 'daily_r18':
         daily_or_daily_r18_downloader('daily_r18', args.date, args.page)
     elif args.mode == 'author':
         author_downloader(args.uid, args.num)
