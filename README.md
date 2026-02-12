@@ -3,6 +3,35 @@
 
 ![PixPin_2026-02-11_13-59-20](https://github.com/user-attachments/assets/f7e44adc-41f6-4d92-88ac-02b6030cee96)
 
+# 安装爬虫工具命令
+支持命令格式执行爬虫工具
+
+将源代码下载到本地
+
+<img width="566" height="162" alt="image" src="https://github.com/user-attachments/assets/046b4441-17c3-4245-955a-cbb1e93ca1e5" />
+
+进入pixiv_download文件夹 并修改confiug.yaml
+
+<img width="689" height="273" alt="image" src="https://github.com/user-attachments/assets/f4eb5603-b2a7-4e24-82e2-544fffd12adb" />
+
+将cookie部分补全 即可正常使用
+
+<img width="1085" height="632" alt="image" src="https://github.com/user-attachments/assets/1e99cc30-4f31-492c-bc73-cdeddae69d54" />
+
+回到setup.py文件的目录 并启动cmd
+
+执行以下命令
+
+```shell pip install . ```
+
+<img width="562" height="130" alt="image" src="https://github.com/user-attachments/assets/85662c36-df7f-4cad-a1f0-5c30f7a5486e" />
+
+
+随后即可正常使用
+
+<img width="562" height="304" alt="image" src="https://github.com/user-attachments/assets/297ee44d-729a-456d-88d8-710024dba8b6" />
+
+
 # 实现功能
 
 多模式下载 比如下载每日榜单图片,下载作者作品,通过搜索tag下载作品
