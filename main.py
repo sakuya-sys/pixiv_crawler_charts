@@ -20,24 +20,6 @@ headers={
 }
 #cookies设置
 cookies_dict = {
-    "first_visit_datetime_pc": "2025-09-29 00:05:23",
-    "p_ab_id": "4",
-    "p_ab_id_2": "5",
-    "p_ab_d_id": "1715182864",
-    "yuid_b": "gpRUJg",
-    "privacy_policy_notification": "0",
-    "a_type": "0",
-    "device_token": "a02526c7d7e5a5545fde16c2221c77aa",
-    "privacy_policy_agreement": "7",
-    "login_ever": "yes",
-    "c_type": "25",
-    "b_type": "0",
-    "user_language": "zh",
-    "cc1": "2026-02-09 23:12:29",
-    "PHPSESSID": "123617030_jKQO6735uTHsC7KNvKCClU0oLrRQn9U3",
-    "_cfuvid": "xhev.WPDQ5OY0l7._vOaaoKqcH8r1lUOsLpqwrYGS6I-1770692960681-0.0.1.1-604800000",
-    "__cf_bm": "T94Y31ZvcuENqJFpx.fbIxu4o99ur_FkxKGrvWGjpJ0-1770702753-1.0.1.1-DUnNWYc9NqE8fcsp6c_MyC7kftHWMEqD.MsO6inU9cuCRlBHmhsOwx4QiZr3AwQwytJJXoKLVJ7APq7ux1gBWy_.kD9zd39xbjF46gTRWc2kHHM_HJQ45PMAVOtvejCM",
-    "cf_clearance": ".7qvGfV21lJqu9hphv5GIRzpbQQhjL5RbVvxa2nhaCg-1770703016-1.2.1.1-frcTmUWONvYbptL.JfNiY8oKwirL7.X4c0Hy0mIZHh2ih93H5VnS4azoUZOk6RjGqH.rkv1_SrlMZ1teKSkdk_NV7oN0XMSZaSMsF5rklLDihbLD5Src_t3qGj1jQQhGqs6KOGK7_2SRy1v3rw6Bu1hhMjo7ZgpmHy8Q8.4zNSd2cvBHZGVsx6bGoFvtSrkyTK8oIp2vj.D3dQFNQPyD4mdRM5R0FgBllVHlOdCn8qU"
 
 }
 #图片保存路径
@@ -420,4 +402,5 @@ if __name__=="__main__":
             urls=get_urls(url=url_mode_date)
             general_download(urls,path)
     
+
 
